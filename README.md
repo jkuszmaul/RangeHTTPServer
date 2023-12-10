@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/danvk/RangeHTTPServer.svg?branch=master)](https://travis-ci.org/danvk/RangeHTTPServer) [![Coverage Status](https://coveralls.io/repos/danvk/RangeHTTPServer/badge.svg?branch=master)](https://coveralls.io/r/danvk/RangeHTTPServer?branch=master)
+This fork adds CORS support to play nice with foxglove.dev
 
 # RangeHTTPServer
 

@@ -103,14 +103,31 @@ class RangeRequestHandler(SimpleHTTPRequestHandler):
         return f
 
     def end_headers(self):
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', '*')
+        self.send_header('Access-Control-Allow-Headers', '*')
+        self.send_header('Access-Control-Expose-Headers', '*')
         self.send_header('Accept-Ranges', 'bytes')
         return SimpleHTTPRequestHandler.end_headers(self)
 
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.end_headers()
+
     def copyfile(self, source, outputfile):
-        if not self.range:
-            return SimpleHTTPRequestHandler.copyfile(self, source, outputfile)
+        try:
+            if not self.range:
+                return SimpleHTTPRequestHandler.copyfile(self, source, outputfile)
+        except ConnectionResetError:
+            # Some clients like to just cancel the request in the middle.
+            print("Connection reset during transfer.")
+            return
 
         # SimpleHTTPRequestHandler uses shutil.copyfileobj, which doesn't let
         # you stop the copying before the end of the file.
         start, stop = self.range  # set in send_head()
-        copy_byte_range(source, outputfile, start, stop)
+        try:
+            copy_byte_range(source, outputfile, start, stop)
+        except ConnectionResetError:
+            # Some clients like to just cancel the request in the middle.
+            print("Connection reset during transfer.")
