@@ -1,0 +1,6 @@
+py_library(
+    name = "RangeHTTPServer",
+    srcs = ["RangeHTTPServer/__init__.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+)
